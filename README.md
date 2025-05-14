@@ -18,12 +18,13 @@ A Constraint Satisfaction Problem solver for scheduling exams without conflicts.
 dotnet run 
 
 ## 🗂️ Code Structure
-
+```
 /ExamScheduler
 ├── Program.fs        # Usage example
 ├── Solver.fs         # Core CSP algorithm
 ├── Types.fs          # Data models
 └── ExamScheduler.fsproj
+```
 
 
 ## 📥 Input Example

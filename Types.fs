@@ -17,3 +17,14 @@ type Assignment = {
     RoomId: string
     TimeSlot: string
 }
+
+type ScheduleError =
+    | RoomCapacityExceeded of examId: int * roomId: string
+    | NoValidSlotsAvailable of examId: int
+    | StudentConflict of examId1: int * examId2: int * timeSlot: string
+    | NoRoomsAvailableForExam of examId: int
+
+type Solution = {
+    Assignments: Assignment list
+    Conflicts: int  // Número de conflictos en esta solución
+}

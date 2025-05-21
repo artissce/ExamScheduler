@@ -24,7 +24,7 @@ let countConflicts (allExams: Exam list) (assignments: Assignment list) =
             hasStudentOverlap exam1 (allExams |> List.find (fun e -> e.Id = a2.ExamId))
         )
         |> List.length
-    ) / 2
+    )
 
 let generateRandomAssignment (exams: Exam list) (rooms: Room list) (slots: string list) =
     let rnd = System.Random()
@@ -32,7 +32,7 @@ let generateRandomAssignment (exams: Exam list) (rooms: Room list) (slots: strin
     |> List.map (fun exam ->
         let validRooms = rooms |> List.filter (fun r -> fitsInRoom exam r)
         let validSlots = slots |> List.filter (fun s -> isValidSlot exam s)
-        
+
         if List.isEmpty validRooms then
             failwithf "No hay aulas válidas para el examen %d (necesita capacidad para %d estudiantes)" exam.Id exam.Students.Length
         elif List.isEmpty validSlots then
@@ -46,10 +46,11 @@ let generateRandomAssignment (exams: Exam list) (rooms: Room list) (slots: strin
 let minConflicts (exams: Exam list) (rooms: Room list) (slots: string list) (maxIterations: int) =
     let rnd = System.Random()
     let allExams = exams
-    
+    let conflictFn = countConflicts allExams
+
     try
         let mutable currentSolution = generateRandomAssignment exams rooms slots
-        let mutable currentConflicts = countConflicts allExams currentSolution
+        let mutable currentConflicts = conflictFn currentSolution
         let mutable iterations = 0
 
         while iterations < maxIterations && currentConflicts > 0 do
@@ -77,7 +78,7 @@ let minConflicts (exams: Exam list) (rooms: Room list) (slots: string list) (max
                                 let tempSolution = 
                                     currentSolution 
                                     |> List.map (fun a -> if a.ExamId = assignmentToFix.ExamId then newAssignment else a)
-                                yield (tempSolution, countConflicts allExams tempSolution)
+                                yield (tempSolution, conflictFn tempSolution)
                     ]
 
                 if not (List.isEmpty possibleAssignments) then
